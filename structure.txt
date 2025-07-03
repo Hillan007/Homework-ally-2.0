@@ -1,0 +1,11 @@
+homework-ally/
+│
+├── main.py                  # 🔥 FastAPI app entry point
+├── grok_client.py           # 🧠 Handles Grok API calls
+├── file_parser.py           # 📄 Extracts text from PDF/Word/Image files
+├── templates/
+│   └── index.html           # 🎨 Simple frontend for upload + results
+├── static/
+│   └── style.css            # 💅 Basic styling (optional)
+├── requirements.txt         # 📦 Python dependencies
+└── README.md                # 📘 Project overview

@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+aiofiles
+python-multipart
+requests
+python-docx
+pytesseract
+pdfplumber
+Pillow
+jinja2

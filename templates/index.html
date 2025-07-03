@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homework Ally Uploader</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      max-width: 450px;
+      margin: 40px auto;
+      padding: 32px 28px 24px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #ff7f50;
+      margin-bottom: 0.5em;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #fff176, 4px 4px 0 #ffd54f;
+    }
+    .mascot {
+      width: 80px;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-15px);}
+    }
+    p {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 1.5em;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      align-items: center;
+    }
+    .file-label {
+      background: #fff176;
+      color: #333;
+      padding: 10px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+      border: 2px dashed #ff7f50;
+      margin-bottom: 0.5em;
+      display: inline-block;
+    }
+    .file-label:hover {
+      background: #ffd54f;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    input[type="text"] {
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 2px solid #43c6ac;
+      font-size: 1rem;
+      width: 90%;
+      outline: none;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus {
+      border: 2px solid #ff7f50;
+      background: #fffde7;
+    }
+    button[type="submit"] {
+      background: linear-gradient(90deg, #43c6ac 60%, #ff7f50 100%);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(67,198,172,0.15);
+      transition: background 0.2s, transform 0.2s;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, #ff7f50 60%, #43c6ac 100%);
+      transform: scale(1.05);
+    }
+    .result-box {
+      background: #fffde7;
+      border: 2px solid #ffd54f;
+      border-radius: 18px;
+      margin-top: 2em;
+      padding: 18px 14px;
+      color: #333;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(255,215,79,0.08);
+      animation: pop-in 0.7s;
+    }
+    @keyframes pop-in {
+      0% { transform: scale(0.7); opacity: 0;}
+      100% { transform: scale(1); opacity: 1;}
+    }
+    .hint {
+      font-size: 0.95em;
+      color: #888;
+      margin-bottom: 1em;
+    }
+    .rainbow-bar {
+      height: 8px;
+      width: 100%;
+      background: repeating-linear-gradient(90deg, #ff7f50, #ffd54f 20%, #43c6ac 40%, #ff7f50 60%, #ffd54f 80%, #43c6ac 100%);
+      border-radius: 8px;
+      margin-bottom: 18px;
+      animation: rainbow-move 3s linear infinite;
+      background-size: 200% 100%;
+    }
+    @keyframes rainbow-move {
+      0% { background-position: 0 0;}
+      100% { background-position: 100% 0;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/static/mascot.png" alt="Homework Ally Mascot" class="mascot" onerror="this.style.display='none'">
+    <div class="rainbow-bar"></div>
+    <h1>📚 Homework Ally</h1>
+    <p>Upload your question file <b>or</b> type your question below and let the AI do the thinking!</p>
+    <div class="hint">You can upload a PDF, Word, or Text file, or just type your question. No need to do both!</div>
+    <form action="/upload/" method="POST" enctype="multipart/form-data">
+      <label class="file-label">
+        <span>📁 Choose a file</span>
+        <input type="file" name="file" accept=".pdf,.doc,.docx,.txt" />
+      </label>
+      <span style="color:#888;font-size:0.9em;">or</span>
+      <input type="text" name="question_text" placeholder="Type your question here..." autocomplete="off" />
+      <button type="submit">🚀 Ask Homework Ally!</button>
+    </form>
+
+    {% if solution %}
+      <div class="result-box">
+        <h2>📥 Homework Ally Says:</h2>
+        <p>{{ solution }}</p>
+      </div>
+    {% endif %}
+
+    {% if request.cookies.user_email %}
+      {% if user and user.profile_pic %}
+        <img src="{{ user.profile_pic }}" alt="Profile Pic" style="width:60px;height:60px;border-radius:50%;margin-bottom:10px;">
+      {% endif %}
+      <div style="margin-bottom:1em;">
+        <span>Welcome, {{ request.cookies.user_email }}!</span>
+        <a href="/logout" style="margin-left:10px;">Logout</a>
+      </div>
+    {% else %}
+      <div style="margin-bottom:1em;">
+        <a href="/signup">Sign Up</a> | <a href="/login">Login</a>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

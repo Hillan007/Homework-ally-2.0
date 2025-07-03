@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up - Homework Ally</title>
+</head>
+<body>
+  <h2>Sign Up</h2>
+  {% if error %}
+    <div style="color:red;">{{ error }}</div>
+  {% endif %}
+  <!-- Add enctype and file input -->
+  <form method="post" action="/signup" enctype="multipart/form-data">
+    <input type="email" name="email" placeholder="Email" required /><br>
+    <input type="password" name="password" placeholder="Password" required /><br>
+    <input type="file" name="profile_pic" accept="image/*" /><br>
+    <button type="submit">Sign Up</button>
+  </form>
+  <a href="/">Back to Home</a>
+</body>
+</html>
