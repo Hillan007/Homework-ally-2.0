@@ -16,6 +16,13 @@
 
 ---
 
+## 🟢 Live Demo
+
+Try Homework Ally live:  
+👉 [https://homework-ally-2-0.vercel.app/](https://homework-ally-2-0.vercel.app/)
+
+---
+
 ## 🛠️ Tools & Technologies Used
 
 - **[FastAPI](https://fastapi.tiangolo.com/):** High-performance Python web framework for the backend.
