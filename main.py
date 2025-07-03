@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form, Request, Cookie
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
@@ -69,3 +69,8 @@ async def handle_upload(request: Request, file: UploadFile = File(None), questio
             "request": request,
             "error": "An unexpected error occurred. Check your backend logs."
         })
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("static/faviconio-logo/logo.png")
