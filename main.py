@@ -73,4 +73,4 @@ async def handle_upload(request: Request, file: UploadFile = File(None), questio
 
 @app.get("/favicon.ico")
 async def favicon():
-    return FileResponse("static/faviconio-logo/logo.png")
+    return FileResponse("/static/favicon.png")
