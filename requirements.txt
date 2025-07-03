@@ -10,7 +10,7 @@ Pillow
 jinja2
 huggingface_hub
 supabase
-
+passlib
 requests
 python-dotenv
 # For local development, you can use the following command to install the dependencies:
