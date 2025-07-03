@@ -4,6 +4,8 @@ from supabase import create_client, Client
 from passlib.context import CryptContext
 import os
 
+from template_engine import templates
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -20,7 +22,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 @router.get("/signup", response_class=HTMLResponse)
 async def signup_form(request: Request):
-    return request.app.templates.TemplateResponse("signup.html", {"request": request})
+    return templates.TemplateResponse("signup.html", {"request": request})
 
 @router.post("/signup")
 async def signup(
@@ -32,36 +34,40 @@ async def signup(
     hashed_pw = hash_password(password)
     profile_pic_url = None
 
-    if profile_pic:
-        # Save to static/profile_pics/ and generate URL
+    if profile_pic and profile_pic.filename:
         os.makedirs("static/profile_pics", exist_ok=True)
         file_location = f"static/profile_pics/{email}_{profile_pic.filename}"
         with open(file_location, "wb") as f:
             f.write(await profile_pic.read())
         profile_pic_url = f"/static/profile_pics/{email}_{profile_pic.filename}"
 
-    result = supabase.table("users").insert({
-        "email": email,
-        "password": hashed_pw,
-        "profile_pic": profile_pic_url
-    }).execute()
-    if result.data:
-        return RedirectResponse("/", status_code=303)
-    return request.app.templates.TemplateResponse("signup.html", {"request": request, "error": "Sign up failed. Email may already exist."})
+    try:
+        result = supabase.table("users").insert({
+            "email": email,
+            "password": hashed_pw,
+            "profile_pic": profile_pic_url
+        }).execute()
+        if result.data:
+            return RedirectResponse("/", status_code=303)
+        else:
+            return templates.TemplateResponse("signup.html", {"request": request, "error": "Sign up failed. Email may already exist."})
+    except Exception as e:
+        return templates.TemplateResponse("signup.html", {"request": request, "error": f"Sign up failed: {e}"})
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_form(request: Request):
-    return request.app.templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("login.html", {"request": request})
 
 @router.post("/login")
 async def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    user = supabase.table("users").select("*").eq("email", email).single().execute()
-    if user.data and verify_password(password, user.data["password"]):
-        # For demo: set a session cookie or similar here
+    result = supabase.table("users").select("*").eq("email", email).single().execute()
+    user = result.data
+    if user and verify_password(password, user["password"]):
         response = RedirectResponse("/", status_code=303)
-        response.set_cookie("user_email", email)  # Not secure, just for demo!
+        response.set_cookie("user_email", email)
         return response
-    return request.app.templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password."})
+    # If user is None or password is wrong, show error
+    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password."})
 
 @router.get("/logout")
 async def logout():

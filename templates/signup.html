@@ -2,19 +2,105 @@
 <html>
 <head>
   <title>Sign Up - Homework Ally</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .signup-container {
+      background: rgba(255,255,255,0.97);
+      border-radius: 25px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 32px 28px 24px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .mascot {
+      width: 80px;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-15px);}
+    }
+    h2 {
+      color: #ff7f50;
+      margin-bottom: 0.5em;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #fff176, 4px 4px 0 #ffd54f;
+    }
+    .welcome {
+      color: #333;
+      font-size: 1.1em;
+      margin-bottom: 1.5em;
+    }
+    input[type="email"], input[type="password"] {
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 2px solid #43c6ac;
+      font-size: 1rem;
+      width: 90%;
+      outline: none;
+      margin-bottom: 1em;
+      transition: border 0.2s;
+    }
+    input[type="email"]:focus, input[type="password"]:focus {
+      border: 2px solid #ff7f50;
+      background: #fffde7;
+    }
+    button[type="submit"] {
+      background: linear-gradient(90deg, #43c6ac 60%, #ff7f50 100%);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(67,198,172,0.15);
+      transition: background 0.2s, transform 0.2s;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, #ff7f50 60%, #43c6ac 100%);
+      transform: scale(1.05);
+    }
+    .error {
+      color: red;
+      margin-bottom: 1em;
+    }
+    .back-link {
+      margin-top: 1.5em;
+      display: block;
+      color: #43c6ac;
+      text-decoration: none;
+      font-size: 1em;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h2>Sign Up</h2>
-  {% if error %}
-    <div style="color:red;">{{ error }}</div>
-  {% endif %}
-  <!-- Add enctype and file input -->
-  <form method="post" action="/signup" enctype="multipart/form-data">
-    <input type="email" name="email" placeholder="Email" required /><br>
-    <input type="password" name="password" placeholder="Password" required /><br>
-    <input type="file" name="profile_pic" accept="image/*" /><br>
-    <button type="submit">Sign Up</button>
-  </form>
-  <a href="/">Back to Home</a>
+  <div class="signup-container">
+    <img src="/static/mascot.png" alt="Mascot" class="mascot" onerror="this.style.display='none'">
+    <h2>Join Homework Ally!</h2>
+    <div class="welcome">Sign up to get fun, friendly homework help from our AI buddy. It's fast, safe, and easy!</div>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <!-- Removed enctype and file input -->
+    <form method="post" action="/signup">
+      <input type="email" name="email" placeholder="Email" required /><br>
+      <input type="password" name="password" placeholder="Password" required /><br>
+      <button type="submit">Sign Up</button>
+    </form>
+    <a href="/" class="back-link">Back to Home</a>
+  </div>
 </body>
 </html>

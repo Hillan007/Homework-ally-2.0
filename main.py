@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form, Request, Cookie
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from template_engine import templates
 from starlette.requests import Request
 import shutil, os, traceback
 
@@ -12,9 +12,8 @@ from supabase import create_client
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
-
 app.include_router(auth_router)
+
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -23,6 +22,8 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.get("/", response_class=HTMLResponse)
 async def form_get(request: Request, user_email: str = Cookie(default=None)):
+    if not user_email:
+        return RedirectResponse("/login")
     user = None
     if user_email:
         result = supabase.table("users").select("profile_pic").eq("email", user_email).single().execute()
@@ -34,7 +35,9 @@ async def form_get(request: Request, user_email: str = Cookie(default=None)):
 
 
 @app.post("/upload/")
-async def handle_upload(request: Request, file: UploadFile = File(None), question_text: str = Form("")):
+async def handle_upload(request: Request, file: UploadFile = File(None), question_text: str = Form(""), user_email: str = Cookie(default=None)):
+    if not user_email:
+        return RedirectResponse("/login")
     try:
         question = ""
 
