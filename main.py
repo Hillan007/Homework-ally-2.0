@@ -4,6 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from template_engine import templates
 from starlette.requests import Request
 import shutil, os, traceback
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from file_parser import extract_text_from_file
 from Huggingface_client import solve_with_openai

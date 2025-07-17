@@ -9,6 +9,10 @@ from datetime import datetime
 import os
 import shutil
 from bson import ObjectId
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from template_engine import templates
 

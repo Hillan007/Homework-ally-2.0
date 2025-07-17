@@ -35,6 +35,8 @@
     }
   },
   "env": {
-    "OPENAI_API_KEY": "@openai_api_key"
+    "OPENAI_API_KEY": "@openai_api_key",
+    "MONGODB_URL": "@mongodb_url",
+    "DATABASE_NAME": "@database_name"
   }
 }
