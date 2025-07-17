@@ -116,29 +116,38 @@ async def upload_profile_picture(
         
         # Create profile_pics directory if it doesn't exist
         profile_pics_dir = "static/profile_pics"
-        os.makedirs(profile_pics_dir, exist_ok=True)
-        
-        # Save file with user's email as filename
-        file_extension = profile_pic.filename.split('.')[-1] if '.' in profile_pic.filename else 'jpg'
-        safe_email = user_email.replace('@', '_').replace('.', '_')
-        filename = f"{safe_email}.{file_extension}"
-        file_path = os.path.join(profile_pics_dir, filename)
-        
-        # Save the uploaded file
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(profile_pic.file, buffer)
-        
-        # Update user profile in database
-        profile_pic_url = f"/static/profile_pics/{filename}"
-        update_user_profile_pic(user_email, profile_pic_url)
-        
-        # Get updated user profile
-        user = get_user_profile(user_email)
-        
-        return templates.TemplateResponse(
-            "profile.html",
-            {"request": request, "user": user, "success": "Profile picture updated successfully!"}
-        )
+        try:
+            os.makedirs(profile_pics_dir, exist_ok=True)
+            
+            # Save file with user's email as filename
+            file_extension = profile_pic.filename.split('.')[-1] if '.' in profile_pic.filename else 'jpg'
+            safe_email = user_email.replace('@', '_').replace('.', '_')
+            filename = f"{safe_email}.{file_extension}"
+            file_path = os.path.join(profile_pics_dir, filename)
+            
+            # Save the uploaded file
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(profile_pic.file, buffer)
+            
+            # Update user profile in database
+            profile_pic_url = f"/static/profile_pics/{filename}"
+            update_user_profile_pic(user_email, profile_pic_url)
+            
+            # Get updated user profile
+            user = get_user_profile(user_email)
+            
+            return templates.TemplateResponse(
+                "profile.html",
+                {"request": request, "user": user, "success": "Profile picture updated successfully!"}
+            )
+            
+        except (OSError, PermissionError) as file_error:
+            # In serverless environments like Vercel, file operations may fail
+            user = get_user_profile(user_email)
+            return templates.TemplateResponse(
+                "profile.html",
+                {"request": request, "user": user, "error": "Profile picture upload not supported in this environment. Please use local development."}
+            )
         
     except Exception as e:
         print(f"Error uploading profile picture: {e}")

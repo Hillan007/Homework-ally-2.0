@@ -118,8 +118,7 @@ async def signup(
     request: Request,
     email: str = Form(...),
     password: str = Form(...),
-    confirm_password: str = Form(None),
-    profile_pic: UploadFile = File(None)
+    confirm_password: str = Form(None)
 ):
     try:
         # Validate passwords match (if confirm_password is provided)
@@ -129,26 +128,8 @@ async def signup(
                 "error": "Passwords do not match."
             })
         
-        # If confirm_password is not provided, skip validation (for backward compatibility)
-        if not confirm_password:
-            confirm_password = password  # Set it to password for processing
-        
-        # Handle profile picture upload
-        profile_pic_path = None
-        if profile_pic and profile_pic.filename:
-            # Create profile pics directory if it doesn't exist
-            os.makedirs("static/profile_pics", exist_ok=True)
-            
-            # Save profile picture
-            profile_pic_path = f"static/profile_pics/{email}_{profile_pic.filename}"
-            with open(profile_pic_path, "wb") as buffer:
-                shutil.copyfileobj(profile_pic.file, buffer)
-            
-            # Store relative path for web access
-            profile_pic_path = f"/static/profile_pics/{email}_{profile_pic.filename}"
-        
-        # Create user
-        user_id = create_user(email, password, profile_pic_path)
+        # Create user without profile picture (can be added later via profile page)
+        user_id = create_user(email, password, None)
         
         if user_id:
             response = RedirectResponse("/", status_code=303)
