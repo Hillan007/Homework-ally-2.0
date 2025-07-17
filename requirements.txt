@@ -9,11 +9,12 @@ pdfplumber
 Pillow
 jinja2
 huggingface_hub
-supabase
 passlib
 requests
 python-dotenv
 openai
+pymongo
+bcrypt
 # For local development, you can use the following command to install the dependencies:
 # pip install -r requirements.txt
 # For production, you might want to use a virtual environment or Docker to manage dependencies.

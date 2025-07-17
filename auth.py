@@ -60,14 +60,18 @@ async def login_form(request: Request):
 
 @router.post("/login")
 async def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    result = supabase.table("users").select("*").eq("email", email).single().execute()
-    user = result.data
-    if user and verify_password(password, user["password"]):
-        response = RedirectResponse("/", status_code=303)
-        response.set_cookie("user_email", email)
-        return response
-    # If user is None or password is wrong, show error
-    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password."})
+    try:
+        result = supabase.table("users").select("*").eq("email", email).single().execute()
+        user = result.data
+        if user and verify_password(password, user["password"]):
+            response = RedirectResponse("/", status_code=303)
+            response.set_cookie("user_email", email)
+            return response
+        # If user is None or password is wrong, show error
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password."})
+    except Exception as e:
+        print(f"Login error: {e}")
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Connection error. Please check your internet connection and try again."})
 
 @router.get("/logout")
 async def logout():

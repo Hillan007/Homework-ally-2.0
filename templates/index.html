@@ -163,6 +163,7 @@
       {% endif %}
       <div style="margin-bottom:1em;">
         <span>Welcome, {{ request.cookies.user_email }}!</span>
+        <a href="/profile" style="margin-left:10px;">Profile</a>
         <a href="/logout" style="margin-left:10px;">Logout</a>
       </div>
     {% else %}
