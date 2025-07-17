@@ -17,6 +17,7 @@ app.include_router(auth_router)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+openai_api_key = os.getenv('OPENAI_API_KEY')
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
@@ -57,7 +58,7 @@ async def handle_upload(request: Request, file: UploadFile = File(None), questio
                 "error": "Please upload a file or type a question."
             })
 
-        solution = solve_with_openai(question)  # <-- update this line
+        solution = solve_with_openai(question, openai_api_key)  # Pass the OpenAI API key
 
         return templates.TemplateResponse("index.html", {
             "request": request,
